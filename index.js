@@ -7,7 +7,7 @@ async function noBe10x() {
   //for (let i = 0; i < LIMIT; i++) {
   let i = 0;
   while (true) {
-    const response = await fetch("https://pay.be10x.in/api/orders", {
+    const orderResponse = await fetch("https://pay.be10x.in/api/orders", {
       method: "POST",
       body: JSON.stringify({
         payment_method: "RZP - 10XPay",
@@ -126,11 +126,24 @@ async function noBe10x() {
         "Content-Type": "application/json",
       },
     });
-    const result = await response.json();
-    console.log(i, result.msg);
+    const orderResult = await orderResponse.json();
+    console.log(i, orderResult.msg);
+
+    const paymentResponse = await fetch("https://pay.be10x.in/api/razorpay/payment", {
+      method: "POST",
+      body: JSON.stringify({ amount: 10.79 }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const paymentResult = await paymentResponse.json();
+    console.log(i, paymentResult.msg, paymentResult.data?.id);
+
     i++;
   }
 }
+
+async function createOrder() {}
 
 server.get("/health", (req, res) => {
   res.json({ success: true });
